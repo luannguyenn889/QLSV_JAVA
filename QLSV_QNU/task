@@ -1,0 +1,16 @@
+Viết chương trình java (console), cho phép:
+1) quản lý một danh sách sinh viên, mỗi sinh viên có các thông tin sau: mã sinh viên, họ tên, ngày tháng năm sinh, ngành đào tạo, điểm trung bình, lớp sinh hoạt. Thao tác quản lý gồm có: thêm, xóa, sửa.
+2) sử dụng MySQL để lưu dữ liệu mà chương trình quản lý. 
+3) Nhập vào khoảng 10 sinh viên thuộc 3 lớp sinh hoạt khác nhau. 
+Dữ liệu nhập vào phải thỏa mãn các ràng buộc dữ liệu như: 
++ ngày tháng năm sinh phải hợp lệ; 
++ tuổi sinh viên phải hợp lý (>=15 tuổi, <=110 tuổi); 
++ điểm trung bình phải trong đoạn [0.0, 10.0]; 
++ họ tên phải được chuẩn hóa trước khi lưu vào CSDL; 
++ ngành đào tạo chỉ có thể có 2 giá trị: "CNTT" hoặc "KTPM"; 
++ mã sinh viên phải có dạng số 10 chữ số, bắt đầu là 455105xxxx (ứng với ngành CNTT) hoặc 455109xxxx (ứng với ngành KTPM);
+4) Cho phép in ra danh sách các sinh viên thuộc cùng lớp sinh hoạt; danh sách tất cả sv; danh sách sv của một ngành; danh sách sinh viên sắp xếp theo điểm trung bình; danh sách sinh viên sinh vào 1 tháng là số nhập từ bàn phím;
+
+Screenshot màn hình IDE và các kết quả chạy chương trình => lưu vào 1 thư mục.
+Đẩy code và thư mục screenshot lên git.
+Gửi link git.
