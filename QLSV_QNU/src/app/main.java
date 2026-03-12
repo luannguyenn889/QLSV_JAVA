@@ -1,39 +1,60 @@
 package app;
 import SV.*;
-
-import java.util.*;
 import java.sql.*;
+import java.util.*;
 public class main {
 	public static void main(String[] args) {
 		DSSV ds = new DSSV(null);
 		SinhVien sv = new SinhVien();
+		    SinhVien sv1  = new SinhVien("4651050091", "Nguyễn Văn An",    "15/03/2004", "CNTT", 8.5, "22CNTT1");
+	        SinhVien sv2  = new SinhVien("4651050092", "Trần Thị Bích",    "22/07/2003", "KTPM", 7.8, "22KTPM1");
+	        SinhVien sv3  = new SinhVien("4651090093", "Lê Hoàng Cường",   "10/11/2004", "CNTT", 6.2, "22CNTT2");
+	        SinhVien sv4  = new SinhVien("4651050094", "Phạm Minh Đức",    "05/01/2003", "KTPM", 9.1, "22KTPM2");
+	        SinhVien sv5  = new SinhVien("4651090095", "Hoàng Thị Em",     "28/09/2004", "CNTT", 5.5, "22CNTT1");
+	        SinhVien sv6  = new SinhVien("4651050096", "Võ Quốc Phong",    "14/06/2003", "KTPM", 7.0, "22KTPM1");
+	        SinhVien sv7  = new SinhVien("4651090097", "Đặng Thùy Giang",  "30/12/2004", "CNTT", 8.9, "22CNTT2");
+	        SinhVien sv8  = new SinhVien("4651050098", "Bùi Thanh Hải",    "18/04/2003", "KTPM", 6.7, "22KTPM2");
+	        SinhVien sv9  = new SinhVien("4651090099", "Ngô Khánh Inh",    "07/08/2004", "CNTT", 9.5, "22CNTT1");
+	        SinhVien sv10 = new SinhVien("4651050019", "Lý Thị Kim",       "25/02/2003", "KTPM", 7.3, "22KTPM1");
+	        ds.themSV(sv1);
+	        ds.themSV(sv2);
+	        ds.themSV(sv3);
+	        ds.themSV(sv4);
+	        ds.themSV(sv5);
+	        ds.themSV(sv6);
+	        ds.themSV(sv7);
+	        ds.themSV(sv8);
+	        ds.themSV(sv9);
+	        ds.themSV(sv10);
+
 		Scanner sc = new Scanner(System.in);
 		int choice;
 
         do {
             System.out.println("\n--- QUẢN LÝ SINH VIÊN ---");
             System.out.println("1. Thêm sinh viên");
-            System.out.println("2. Sửa thông tin sinh viên");
-            System.out.println("3. Xóa sinh viên");
-            System.out.println("4. Xem danh sách tất cả sinh viên");
-            System.out.println("5. Xem sinh viên theo lớp");
-            System.out.println("6. Xem sinh viên theo ngành");
-            System.out.println("7. Xem danh sách sắp xếp theo điểm trung bình");
-            System.out.println("8. Xem sinh viên sinh vào tháng cụ thể");
+            System.out.println("2. Sửa thông tin sinh viên trong SQL");
+            System.out.println("3. Xóa sinh viên trong SQL");
+            System.out.println("4. Xem danh sách tất cả sinh viên trong CSDL");
+            System.out.println("5. Xem sinh viên cùng lớp sinh hoạt ");
+            System.out.println("6. Xem danh sách sinh viên  ");
+            System.out.println("7. Xem danh sách sinh viên theo ngành");
+            System.out.println("8. Sắp xếp  danh sách sinh viên theo DTB");
+            System.out.println("9. Danh sách sinh viên sinh vào 1 tháng nào đó");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             choice = Integer.parseInt(sc.nextLine());
 
             switch (choice) {
-                case 1: sv.NhapSV(); sv.addToSql(sv); break;
+                case 1: sv.nhapSV_New(); sv.addToSql(sv); break;
                 case 2: updateStudent(); break;
-                case 3: printStudentAtSQL(); break;
-//                case 3: deleteStudent(scanner); break;
-//                case 4: printAllStudents(); break;
-//                case 5: printStudentsByClass(scanner); break;
-//                case 6: printStudentsByMajor(scanner); break;
-//                case 7: printStudentsSortedByGpa(); break;
-//                case 8: printStudentsByBirthMonth(scanner); break;
+                case 3: deleteStudent(); break;
+                case 4: printStudentAtSQL(); break;
+                case 5: ds.displayListStudentSameClass("22CNTT1"); break;
+                case 6: ds.HienThi(); break;
+                case 7: ds.displayListStudentSameMajor("CNTT"); break;
+                case 8: ds.sapxepSVTheoDTB(); ds.HienThi(); break;
+                case 9: ds.displayListStudentMonthofBirth(7); break;
                 case 0: System.out.println("Thoát chương trình!"); break;
                 default: System.out.println("Lựa chọn không hợp lệ!");
             }
@@ -41,8 +62,6 @@ public class main {
         sc.close();
     }
 
-	
-	
 	public static void printStudentAtSQL() {
 		 Connection con = null;
 		 PreparedStatement pstmt = null;
@@ -108,14 +127,16 @@ public class main {
           }
 
 	}
-  private static void deleteStudent(Scanner scanner) {
+  private static void deleteStudent() {
+	  Scanner sc = new Scanner(System.in);
 	  System.out.print("Nhập mã sinh viên cần xóa: ");
-	  String id = scanner.nextLine();
+	  String id = sc.nextLine();
 	  String sql = "DELETE FROM students WHERE student_id = ?";
 	  Connection con = null;
 	  PreparedStatement pstmt = null;
   try {
 	  con = GetConnection.getconnection();
+	  pstmt = con.prepareStatement(sql);
       pstmt.setString(1, id);
       int rows = pstmt.executeUpdate();
       if (rows > 0) System.out.println("Xóa thành công!");
@@ -124,180 +145,5 @@ public class main {
       System.out.println("Lỗi CSDL: " + e.getMessage());
   }
 }
-	// --- CÁC THAO TÁC CRUD & QUERIES ---
-//
-//    private static void addStudent(Scanner scanner) {
-//        try {
-//            System.out.print("Nhập ngành đào tạo (CNTT / KTPM): ");
-//            String major = scanner.nextLine().toUpperCase();
-//            if (!major.equals("CNTT") && !major.equals("KTPM")) {
-//                System.out.println("Ngành không hợp lệ!"); return;
-//            }
-//
-//            System.out.print("Nhập mã sinh viên (10 số): ");
-//            String id = scanner.nextLine();
-//            if (!isValidId(id, major)) {
-//                System.out.println("Mã sinh viên không hợp lệ hoặc không khớp với ngành!"); return;
-//            }
-//
-//            System.out.print("Nhập họ tên: ");
-//            String name = normalizeName(scanner.nextLine());
-//
-//            System.out.print("Nhập ngày sinh (dd/MM/yyyy): ");
-//            String dobStr = scanner.nextLine();
-//            LocalDate dob = parseAndValidateDob(dobStr);
-//            if (dob == null) return;
-//
-//            System.out.print("Nhập điểm trung bình [0.0 - 10.0]: ");
-//            double gpa = Double.parseDouble(scanner.nextLine());
-//            if (gpa < 0.0 || gpa > 10.0) {
-//                System.out.println("Điểm không hợp lệ!"); return;
-//            }
-//
-//            System.out.print("Nhập lớp sinh hoạt: ");
-//            String className = scanner.nextLine();
-//
-//            String sql = "INSERT INTO students VALUES (?, ?, ?, ?, ?, ?)";
-//            try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//                pstmt.setString(1, id);
-//                pstmt.setString(2, name);
-//                pstmt.setDate(3, java.sql.Date.valueOf(dob));
-//                pstmt.setString(4, major);
-//                pstmt.setDouble(5, gpa);
-//                pstmt.setString(6, className);
-//                pstmt.executeUpdate();
-//                System.out.println("Thêm sinh viên thành công!");
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Lỗi CSDL: " + e.getMessage());
-//        } catch (Exception e) {
-//            System.out.println("Lỗi nhập liệu: " + e.getMessage());
-//        }
-//    }
-//
-//    private static void updateStudent(Scanner scanner) {
-//        System.out.print("Nhập mã sinh viên cần sửa: ");
-//        String id = scanner.nextLine();
-//        
-//        System.out.print("Nhập điểm trung bình mới: ");
-//        double newGpa = Double.parseDouble(scanner.nextLine());
-//
-//        String sql = "UPDATE students SET gpa = ? WHERE student_id = ?";
-//        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//            pstmt.setDouble(1, newGpa);
-//            pstmt.setString(2, id);
-//            int rows = pstmt.executeUpdate();
-//            if (rows > 0) System.out.println("Cập nhật thành công!");
-//            else System.out.println("Không tìm thấy sinh viên!");
-//        } catch (SQLException e) {
-//            System.out.println("Lỗi CSDL: " + e.getMessage());
-//        }
-//    }
-//
-//    private static void deleteStudent(Scanner scanner) {
-//        System.out.print("Nhập mã sinh viên cần xóa: ");
-//        String id = scanner.nextLine();
-//        String sql = "DELETE FROM students WHERE student_id = ?";
-//        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//            pstmt.setString(1, id);
-//            int rows = pstmt.executeUpdate();
-//            if (rows > 0) System.out.println("Xóa thành công!");
-//            else System.out.println("Không tìm thấy sinh viên!");
-//        } catch (SQLException e) {
-//            System.out.println("Lỗi CSDL: " + e.getMessage());
-//        }
-//    }
-//
-//    private static void executeQueryAndPrint(String sql, Object... params) {
-//        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//            for (int i = 0; i < params.length; i++) {
-//                pstmt.setObject(i + 1, params[i]);
-//            }
-//            ResultSet rs = pstmt.executeQuery();
-//            boolean hasData = false;
-//            while (rs.next()) {
-//                hasData = true;
-//                Student s = new Student(
-//                    rs.getString("student_id"), rs.getString("full_name"),
-//                    rs.getDate("dob").toLocalDate(), rs.getString("major"),
-//                    rs.getDouble("gpa"), rs.getString("class_name")
-//                );
-//                System.out.println(s);
-//            }
-//            if (!hasData) System.out.println("Không có dữ liệu.");
-//        } catch (SQLException e) {
-//            System.out.println("Lỗi CSDL: " + e.getMessage());
-//        }
-//    }
-//
-//    private static void printAllStudents() {
-//        System.out.println("--- DANH SÁCH TẤT CẢ SINH VIÊN ---");
-//        executeQueryAndPrint("SELECT * FROM students");
-//    }
-//
-//    private static void printStudentsByClass(Scanner scanner) {
-//        System.out.print("Nhập tên lớp: ");
-//        String className = scanner.nextLine();
-//        System.out.println("--- DANH SÁCH SINH VIÊN LỚP " + className + " ---");
-//        executeQueryAndPrint("SELECT * FROM students WHERE class_name = ?", className);
-//    }
-//
-//    private static void printStudentsByMajor(Scanner scanner) {
-//        System.out.print("Nhập tên ngành (CNTT/KTPM): ");
-//        String major = scanner.nextLine().toUpperCase();
-//        System.out.println("--- DANH SÁCH SINH VIÊN NGÀNH " + major + " ---");
-//        executeQueryAndPrint("SELECT * FROM students WHERE major = ?", major);
-//    }
-//
-//    private static void printStudentsSortedByGpa() {
-//        System.out.println("--- DANH SÁCH SINH VIÊN SẮP XẾP THEO ĐIỂM ---");
-//        executeQueryAndPrint("SELECT * FROM students ORDER BY gpa DESC");
-//    }
-//
-//    private static void printStudentsByBirthMonth(Scanner scanner) {
-//        System.out.print("Nhập tháng sinh (1-12): ");
-//        int month = Integer.parseInt(scanner.nextLine());
-//        System.out.println("--- DANH SÁCH SINH VIÊN SINH THÁNG " + month + " ---");
-//        executeQueryAndPrint("SELECT * FROM students WHERE MONTH(dob) = ?", month);
-//    }
-//
-//    // --- CÁC HÀM VALIDATION VÀ CHUẨN HÓA ---
-//
-//    private static boolean isValidId(String id, String major) {
-//        if (!id.matches("\\d{10}")) return false;
-//        if (major.equals("CNTT") && !id.startsWith("455105")) return false;
-//        if (major.equals("KTPM") && !id.startsWith("455109")) return false;
-//        return true;
-//    }
-//
-//    private static String normalizeName(String name) {
-//        name = name.trim().replaceAll("\\s+", " ");
-//        String[] words = name.split(" ");
-//        StringBuilder sb = new StringBuilder();
-//        for (String w : words) {
-//            if (!w.isEmpty()) {
-//                sb.append(Character.toUpperCase(w.charAt(0)));
-//                sb.append(w.substring(1).toLowerCase()).append(" ");
-//            }
-//        }
-//        return sb.toString().trim();
-//    }
-//
-//    private static LocalDate parseAndValidateDob(String dobStr) {
-//        try {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//            LocalDate dob = LocalDate.parse(dobStr, formatter);
-//            int age = Period.between(dob, LocalDate.now()).getYears();
-//            if (age >= 15 && age <= 110) {
-//                return dob;
-//            } else {
-//                System.out.println("Tuổi sinh viên phải từ 15 đến 110 tuổi (Hiện tại là " + age + " tuổi).");
-//                return null;
-//            }
-//        } catch (DateTimeParseException e) {
-//            System.out.println("Ngày sinh không hợp lệ! Định dạng chuẩn là dd/MM/yyyy.");
-//            return null;
-//        }
-//    }
-//	   
+	
 }

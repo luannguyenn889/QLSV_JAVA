@@ -1,11 +1,12 @@
 package SV;
-import java.util.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 public class SinhVien {
     // quản lý một danh sách sinh viên, mỗi sinh viên có các thông tin sau: mã sinh viên, họ tên, ngày tháng năm sinh, ngành đào tạo, điểm trung bình, lớp sinh hoạt. 
 	//Thao tác quản lý gồm có: thêm, xóa, sửa.
@@ -218,5 +219,80 @@ public class SinhVien {
 	            System.out.println("Lỗi nhập liệu: " + e.getMessage());
 	        }
 	 }
+	 
+	 
+	 // Nhap sv moi
+	 public void nhapSV_New() {
+		    Scanner sc = new Scanner(System.in);
+		    this.msv = nhapMaSV(sc);
+		    this.hoTen = nhapHoTen(sc);
+		    this.ngayThangNamSinh = nhapNgaySinh(sc);
+		    this.nganhDaotao = nhapNganhDaoTao(sc);
+		    this.lopSH = nhapLopSH(sc);
+		    this.dtb = nhapDiemTrungBinh(sc);
+		}
+		private String nhapMaSV(Scanner sc) {
+		    System.out.print("Nhập mã SV: ");
+		    String ma = sc.nextLine().toUpperCase();
+		    if (!ma.matches("\\d{10}")) {
+		        throw new IllegalArgumentException("Mã sinh viên phải gồm đúng 10 chữ số!");
+		    }
+		    if (!ma.startsWith("465105") && !ma.startsWith("465109")) {
+		        throw new IllegalArgumentException("Mã sinh viên phải bắt đầu bằng 465105 hoặc 465109!");
+		    }
+		    return ma;
+		}
+		private String nhapHoTen(Scanner sc) {
+		    System.out.print("Nhập họ tên: ");
+		    String ten = sc.nextLine().trim();
+		    if (ten.isEmpty()) {
+		        throw new IllegalArgumentException("Họ tên không được để trống!");
+		    }
+		    return ten;
+		}
+		private String nhapNgaySinh(Scanner sc) {
+		    System.out.print("Nhập ngày sinh (dd/MM/yyyy): ");
+		    String input = sc.nextLine().trim();
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    LocalDate date;
+		    try {
+		        date = LocalDate.parse(input, formatter);
+		    } catch (DateTimeParseException e) {
+		        throw new IllegalArgumentException("Ngày sinh không đúng định dạng dd/MM/yyyy!");
+		    }
+		    int tuoi = Period.between(date, LocalDate.now()).getYears();
+		    if (tuoi < 15 || tuoi > 110) {
+		        throw new IllegalArgumentException("Tuổi sinh viên phải từ 15 đến 110!");
+		    }
+		    return input;
+		}
+		private String nhapNganhDaoTao(Scanner sc) {
+		    System.out.print("Nhập ngành đào tạo (CNTT/KTPM): ");
+		    String nganh = sc.nextLine().trim().toUpperCase();
+		    if (!nganh.equals("CNTT") && !nganh.equals("KTPM")) {
+		        throw new IllegalArgumentException("Ngành đào tạo chỉ có thể là CNTT hoặc KTPM!");
+		    }
+		    return nganh;
+		}
+		private String nhapLopSH(Scanner sc) {
+		    System.out.print("Nhập lớp sinh hoạt: ");
+		    String lop = sc.nextLine().trim();
+		    if (lop.isEmpty()) {
+		        throw new IllegalArgumentException("Lớp sinh hoạt không được để trống!");
+		    }
+		    return lop;
+		}
+		private double nhapDiemTrungBinh(Scanner sc) {
+		    System.out.print("Nhập điểm trung bình [0.0 - 10.0]: ");
+		    double diem = sc.nextDouble();
+		    sc.nextLine(); // đọc bỏ ký tự xuống dòng còn sót
+		    if (diem < 0.0 || diem > 10.0) {
+		        throw new IllegalArgumentException("Điểm trung bình phải từ 0.0 đến 10.0!");
+		    }
+		    return diem;
+		}
+	 
+	 
+	 
 	
 }
